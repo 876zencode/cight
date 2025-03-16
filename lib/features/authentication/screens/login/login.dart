@@ -1,6 +1,7 @@
 import 'package:cight/common/styles/spacing_styles.dart';
 import 'package:cight/features/authentication/screens/login/widgets/login_form.dart';
 import 'package:cight/features/authentication/screens/login/widgets/login_header.dart';
+import 'package:cight/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -8,7 +9,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
           padding: TSpacingStyle.paddingWithAppBarHeight,
@@ -36,6 +37,7 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: Image.asset(TImages.bottomImage),
     );
   }
 }

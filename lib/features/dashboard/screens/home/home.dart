@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:awesome_ripple_animation/awesome_ripple_animation.dart';
 import 'package:camera/camera.dart';
 import 'package:cight/data/services/image_upload.dart';
 import 'package:cight/data/services/text_to_speech.dart';
 import 'package:cight/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextToSpeechService _ttsService = TextToSpeechService();
 
   Future<void> _captureImage() async {
+    HapticFeedback.vibrate();
     if (_isProcessing) return; // Prevent multiple taps
 
     setState(() => _isProcessing = true);
@@ -37,11 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
       // Capture the image
       final image = await _controller!.takePicture();
 
-      // Save the image
-      // print(image);
       // Convert to PNG
-      final textForSpeech = await _convertToPng(image.path);
-      _ttsService.speak(textForSpeech);
+      // final textForSpeech = await _convertToPng(image.path);
+      // _ttsService.speak(textForSpeech);
 
       // ScaffoldMessenger.of(
       //   context,
@@ -88,40 +90,55 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: const Text(
-              'Tap to trigger cight.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24.0),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Material(
-                color: Colors.black26,
-                elevation: 8,
-                shape: CircleBorder(),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: InkWell(
-                  splashColor: Colors.black26,
-                  onTap: _captureImage,
-                  child: Ink.image(
-                    image: AssetImage(TImages.defaultAppLogo),
-                    height: 300,
-                    width: 300,
-                    fit: BoxFit.cover,
+      body:
+          _isProcessing == false
+              ? Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: const Text(
+                      'Tap to trigger cight.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 24.0),
+                    ),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      RippleAnimation(
+                        repeat: true,
+                        color: Colors.lightGreen,
+                        minRadius: 100,
+                        ripplesCount: 6,
+                        size: Size.square(300),
+                        child: Material(
+                          color: Colors.black26,
+                          elevation: 8,
+                          shape: CircleBorder(),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: InkWell(
+                            splashColor: Colors.black26,
+                            onTap: _captureImage,
+                            child: Ink.image(
+                              image: AssetImage(TImages.defaultAppLogo),
+                              height: 300,
+                              width: 300,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+              : Center(
+                child: LoadingAnimationWidget.fourRotatingDots(
+                  color: Colors.green,
+                  size: 150,
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
       bottomNavigationBar: Image.asset(TImages.bottomImage),
     );
   }

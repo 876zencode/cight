@@ -1,3 +1,4 @@
+import 'package:cight/features/authentication/controllers/login_controller.dart';
 import 'package:cight/features/dashboard/screens/home/home.dart';
 import 'package:cight/utils/constants/sizes.dart';
 import 'package:cight/utils/constants/text_strings.dart';
@@ -5,9 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class TLoginForm extends StatelessWidget {
+class TLoginForm extends StatefulWidget {
   const TLoginForm({super.key});
 
+  @override
+  State<TLoginForm> createState() => _TLoginFormState();
+}
+
+class _TLoginFormState extends State<TLoginForm> {
+  final controller = Get.put(LoginController());
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -25,11 +32,25 @@ class TLoginForm extends StatelessWidget {
             const SizedBox(height: TSizes.spaceBtwInputFields),
 
             /// Password
-            TextFormField(
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Iconsax.password_check),
-                labelText: TTexts.password,
-                suffixIcon: Icon(Iconsax.eye_slash),
+            Obx(
+              () => TextFormField(
+                controller: controller.password,
+                obscureText: controller.hidePassword.value,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Iconsax.password_check),
+                  labelText: TTexts.password,
+                  suffixIcon: IconButton(
+                    onPressed:
+                        () =>
+                            controller.hidePassword.value =
+                                !controller.hidePassword.value,
+                    icon: Icon(
+                      controller.hidePassword.value
+                          ? Iconsax.eye_slash
+                          : Iconsax.eye,
+                    ),
+                  ),
+                ),
               ),
             ),
 
