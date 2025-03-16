@@ -42,8 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
       final image = await _controller!.takePicture();
 
       // Convert to PNG
-      // final textForSpeech = await _convertToPng(image.path);
-      // _ttsService.speak(textForSpeech);
+      final textForSpeech = await _convertToPng(image.path);
+      _ttsService.speak(textForSpeech);
 
       // ScaffoldMessenger.of(
       //   context,
